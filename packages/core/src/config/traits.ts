@@ -1,0 +1,715 @@
+// GENERATED — do not edit.
+// Source: 08-tech/config/traits.json
+// Regenerate: pnpm --filter @pingus/core sync:config
+
+export default {
+  "name": "PINGUS2 Trait Manifest",
+  "version": "0.2",
+  "genesis_supply": 2369,
+  "hard_cap": 5922,
+  "canvas": 2048,
+  "principle": "Traits are fixed at birth. Generation is earned.",
+  "chain": {
+    "network": "ethereum-mainnet",
+    "layer": 1,
+    "standard": "ERC-721",
+    "decision": "08-tech/decisions/ADR-001-chain.md",
+    "bridge": false,
+    "multichain": false
+  },
+  "layers": [
+    {
+      "order": 0,
+      "key": "CUBO",
+      "label": "Cubo",
+      "visible_gens": [
+        0,
+        1
+      ],
+      "note": "The brand mark. Recorded in metadata forever.",
+      "traits": [
+        {
+          "key": "LIMPIO",
+          "weight": 300,
+          "desc": "pristine, 2 internal fractures"
+        },
+        {
+          "key": "GRUESO",
+          "weight": 200,
+          "desc": "oversized cube, pingu small inside"
+        },
+        {
+          "key": "JUSTO",
+          "weight": 170,
+          "desc": "cube barely contains the pingu"
+        },
+        {
+          "key": "TURBIO",
+          "weight": 140,
+          "desc": "milky ice, pingu half-obscured"
+        },
+        {
+          "key": "BURBUJAS",
+          "weight": 100,
+          "desc": "air pockets suspended in ice"
+        },
+        {
+          "key": "ASTILLADO",
+          "weight": 60,
+          "desc": "already damaged at birth"
+        },
+        {
+          "key": "TORCIDO",
+          "weight": 25,
+          "desc": "visibly off-axis, leaning"
+        },
+        {
+          "key": "PERFECTO",
+          "weight": 5,
+          "desc": "a true square. unnatural. rarest."
+        }
+      ]
+    },
+    {
+      "order": 1,
+      "key": "CUERPO",
+      "label": "Cuerpo",
+      "visible_gens": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "traits": [
+        {
+          "key": "ESTANDAR",
+          "weight": 400
+        },
+        {
+          "key": "FLACO",
+          "weight": 180
+        },
+        {
+          "key": "GORDO",
+          "weight": 180
+        },
+        {
+          "key": "PELADO",
+          "weight": 120,
+          "desc": "mid-moult, ragged edges"
+        },
+        {
+          "key": "CRIA",
+          "weight": 90,
+          "desc": "chick. grey fluff. still does not smile."
+        },
+        {
+          "key": "FANTASMA",
+          "weight": 30,
+          "desc": "outline only, no fill"
+        }
+      ]
+    },
+    {
+      "order": 2,
+      "key": "FIT",
+      "label": "Fit",
+      "visible_gens": [
+        1,
+        2
+      ],
+      "note": "donedone.io layer. Trait count = production run. Claim gated on GEN 2.",
+      "traits": [
+        {
+          "key": "NADA",
+          "weight": 500,
+          "garment": null,
+          "claimable": false
+        },
+        {
+          "key": "TEE_DONE",
+          "weight": 300,
+          "garment": "DONE box-logo tee",
+          "claimable": true
+        },
+        {
+          "key": "CARGO_WADDLE",
+          "weight": 220,
+          "garment": "Cargo waddle pant",
+          "claimable": true
+        },
+        {
+          "key": "HOODED_TUX",
+          "weight": 180,
+          "garment": "Hooded tux crew",
+          "claimable": true
+        },
+        {
+          "key": "PUFFER",
+          "weight": 140,
+          "garment": "Puffer shell",
+          "claimable": true
+        },
+        {
+          "key": "CHALECO",
+          "weight": 100,
+          "garment": "Hi-vis reflective vest",
+          "claimable": true
+        },
+        {
+          "key": "MONO_OBRERO",
+          "weight": 60,
+          "garment": "Work coverall",
+          "claimable": "TBD"
+        }
+      ]
+    },
+    {
+      "order": 3,
+      "key": "MARCA",
+      "label": "Marca",
+      "visible_gens": [
+        1,
+        2,
+        3
+      ],
+      "traits": [
+        {
+          "key": "LIMPIO",
+          "weight": 330
+        },
+        {
+          "key": "BANDANA",
+          "weight": 150
+        },
+        {
+          "key": "RESPIRADOR",
+          "weight": 130
+        },
+        {
+          "key": "GORRO_CUBO",
+          "weight": 120
+        },
+        {
+          "key": "GORRA_NATACION",
+          "weight": 100
+        },
+        {
+          "key": "PICO_PARTIDO",
+          "weight": 80
+        },
+        {
+          "key": "PARCHE",
+          "weight": 70
+        },
+        {
+          "key": "CASCO",
+          "weight": 60
+        },
+        {
+          "key": "CAPUCHA",
+          "weight": 50
+        },
+        {
+          "key": "ANTIPARRAS",
+          "weight": 40
+        },
+        {
+          "key": "VENDADO",
+          "weight": 15
+        }
+      ]
+    },
+    {
+      "order": 4,
+      "key": "CARGA",
+      "label": "Carga",
+      "visible_gens": [
+        2
+      ],
+      "note": "GEN 2 only. You cannot hold things inside a cube.",
+      "traits": [
+        {
+          "key": "VACIO",
+          "weight": 340
+        },
+        {
+          "key": "LATA",
+          "weight": 170,
+          "desc": "spray can. core prop."
+        },
+        {
+          "key": "MARTILLO",
+          "weight": 140,
+          "desc": "the doer's tool"
+        },
+        {
+          "key": "CAJON",
+          "weight": 110
+        },
+        {
+          "key": "SARDINA",
+          "weight": 95
+        },
+        {
+          "key": "ROLO",
+          "weight": 80
+        },
+        {
+          "key": "LLAVE",
+          "weight": 70
+        },
+        {
+          "key": "CUADERNO",
+          "weight": 55
+        },
+        {
+          "key": "RADIO",
+          "weight": 40,
+          "desc": "off. never playing."
+        },
+        {
+          "key": "CONO",
+          "weight": 30
+        },
+        {
+          "key": "ASTILLA",
+          "weight": 10,
+          "desc": "a shard of its own cube. kept it."
+        }
+      ]
+    },
+    {
+      "order": 5,
+      "key": "FONDO",
+      "label": "Fondo",
+      "visible_gens": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "traits": [
+        {
+          "key": "VACIO",
+          "weight": 200
+        },
+        {
+          "key": "MUELLE",
+          "weight": 160
+        },
+        {
+          "key": "TALLER",
+          "weight": 150
+        },
+        {
+          "key": "TUNEL",
+          "weight": 130
+        },
+        {
+          "key": "ANDAMIO",
+          "weight": 110
+        },
+        {
+          "key": "OBRA",
+          "weight": 95
+        },
+        {
+          "key": "PERSIANA",
+          "weight": 85
+        },
+        {
+          "key": "BALDOSA",
+          "weight": 70
+        },
+        {
+          "key": "AZOTEA",
+          "weight": 50
+        },
+        {
+          "key": "CAMARA_FRIA",
+          "weight": 35,
+          "desc": "where the cubes were found"
+        },
+        {
+          "key": "HIELO_SUCIO",
+          "weight": 25,
+          "desc": "the old home"
+        },
+        {
+          "key": "SIN_FONDO",
+          "weight": 10
+        }
+      ]
+    },
+    {
+      "order": 6,
+      "key": "SENA",
+      "label": "Seña",
+      "visible_gens": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "note": "Signature layer. Can deface the artwork itself. ~27% deface.",
+      "traits": [
+        {
+          "key": "NINGUNA",
+          "weight": 420,
+          "defaces": false
+        },
+        {
+          "key": "ESQUINAS",
+          "weight": 180,
+          "defaces": false
+        },
+        {
+          "key": "TAG_PARED",
+          "weight": 160,
+          "defaces": false
+        },
+        {
+          "key": "SELLO_HECHO",
+          "weight": 90,
+          "defaces": true
+        },
+        {
+          "key": "TAG_PECHO",
+          "weight": 80,
+          "defaces": true
+        },
+        {
+          "key": "GOTEO",
+          "weight": 50,
+          "defaces": true
+        },
+        {
+          "key": "CENSURADO",
+          "weight": 30,
+          "defaces": true
+        },
+        {
+          "key": "TACHADO",
+          "weight": 20,
+          "defaces": true
+        },
+        {
+          "key": "FECHA",
+          "weight": 10,
+          "defaces": true
+        }
+      ]
+    }
+  ],
+  "post_process": [
+    {
+      "key": "TRATAMIENTO",
+      "label": "Tratamiento",
+      "traits": [
+        {
+          "key": "SERIGRAFIA",
+          "weight": 280
+        },
+        {
+          "key": "RISO",
+          "weight": 250
+        },
+        {
+          "key": "CONCRETO",
+          "weight": 200
+        },
+        {
+          "key": "XEROX",
+          "weight": 170
+        },
+        {
+          "key": "PAPEL_MOJADO",
+          "weight": 100,
+          "gens_only": [
+            2
+          ]
+        }
+      ]
+    },
+    {
+      "key": "PALETA",
+      "label": "Paleta",
+      "derived": true,
+      "note": "Not drawn. Computed. Resolves per generation.",
+      "traits": [
+        {
+          "key": "NARANJA_DONE",
+          "weight": 380,
+          "colors": 4
+        },
+        {
+          "key": "LIMA_BIO",
+          "weight": 250,
+          "colors": 4
+        },
+        {
+          "key": "AMBAR",
+          "weight": 220,
+          "colors": 4
+        },
+        {
+          "key": "ROJO_AVISO",
+          "weight": 100,
+          "colors": 3
+        },
+        {
+          "key": "SIN_COLOR",
+          "weight": 50,
+          "colors": 2,
+          "rarest": true
+        }
+      ]
+    }
+  ],
+  "exclusions": [
+    {
+      "if": {
+        "CUERPO": "FANTASMA"
+      },
+      "force": {
+        "FIT": "NADA"
+      },
+      "reason": "an outline cannot wear clothes"
+    },
+    {
+      "if": {
+        "CUERPO": "FANTASMA"
+      },
+      "force": {
+        "CARGA": "VACIO"
+      },
+      "reason": "an outline cannot hold things"
+    },
+    {
+      "if": {
+        "CUERPO": "CRIA"
+      },
+      "deny": {
+        "FIT": [
+          "PUFFER",
+          "MONO_OBRERO"
+        ]
+      },
+      "reason": "chick does not fit adult sizes"
+    },
+    {
+      "if": {
+        "MARCA": "VENDADO"
+      },
+      "deny": {
+        "MARCA": [
+          "RESPIRADOR",
+          "BANDANA",
+          "ANTIPARRAS"
+        ]
+      },
+      "reason": "one head slot"
+    },
+    {
+      "if": {
+        "MARCA": "CAPUCHA"
+      },
+      "allow_only": {
+        "FIT": [
+          "HOODED_TUX",
+          "PUFFER"
+        ]
+      },
+      "reason": "a hood needs a hood"
+    },
+    {
+      "if": {
+        "SENA": "CENSURADO"
+      },
+      "deny": {
+        "MARCA": [
+          "VENDADO"
+        ]
+      },
+      "reason": "eyes already covered"
+    },
+    {
+      "if": {
+        "PALETA": "SIN_COLOR"
+      },
+      "deny": {
+        "FONDO": [
+          "OBRA"
+        ]
+      },
+      "reason": "barrier is defined by its orange"
+    },
+    {
+      "if": {
+        "PALETA": "SIN_COLOR"
+      },
+      "deny": {
+        "FIT": [
+          "CHALECO"
+        ]
+      },
+      "reason": "hi-vis is defined by its colour"
+    },
+    {
+      "if": {
+        "TRATAMIENTO": "RISO"
+      },
+      "deny": {
+        "PALETA": [
+          "SIN_COLOR"
+        ]
+      },
+      "reason": "riso needs 2 channels to misregister"
+    },
+    {
+      "if": {
+        "FONDO": "SIN_FONDO"
+      },
+      "deny": {
+        "SENA": [
+          "TAG_PARED"
+        ]
+      },
+      "reason": "no wall to tag"
+    },
+    {
+      "if": {
+        "CARGA": "ASTILLA"
+      },
+      "deny": {
+        "CUBO": [
+          "PERFECTO"
+        ]
+      },
+      "reason": "a perfect cube leaves no shard"
+    }
+  ],
+  "bands": [
+    {
+      "key": "FUNDADORES",
+      "count": 2250,
+      "ids": [
+        1,
+        2250
+      ],
+      "nature": "generative"
+    },
+    {
+      "key": "ROMPEDORES",
+      "count": 118,
+      "ids": [
+        2251,
+        2368
+      ],
+      "nature": "hand-finished",
+      "exclusive_trait": "Ruptura"
+    },
+    {
+      "key": "PRIMERO",
+      "count": 1,
+      "ids": [
+        2369,
+        2369
+      ],
+      "nature": "1/1",
+      "locked_gen": 1,
+      "can_breed": false
+    }
+  ],
+  "rupturas": [
+    "QUINTO_COLOR",
+    "CUBO_ROTO",
+    "FUERA_DE_MARCO",
+    "NOTA_A_MANO",
+    "DOS_PINGUS",
+    "INVERTIDO",
+    "SIN_CUERPO",
+    "CUBO_VACIO"
+  ],
+  "reserve": {
+    "plagainnvade": 60,
+    "donedone": 60,
+    "collabs": 30,
+    "archive": 12,
+    "total": 162,
+    "public_mint": 2207,
+    "note": "Reserved tokens thaw under identical rules. No pre-thawed team pingus."
+  },
+  "mint": {
+    "max_per_wallet": 3,
+    "price": "TBD",
+    "tiers": 1,
+    "reveal": "immediate",
+    "reveal_note": "Everyone is a cube. There is nothing to hide."
+  },
+  "breeding": {
+    "name": "EL_ENCUENTRO",
+    "gen_required": 2,
+    "parents": 2,
+    "protocol_fee": 0,
+    "protocol_fee_note": "Permanently 0. No fee setter exists in the contract.",
+    "gas": {
+      "payer": "initiator",
+      "transactions": 1,
+      "partner_cost": 0,
+      "partner_consent": "off-chain EIP-712 signature",
+      "note": "L1 gas is real. Copy says 'no cobramos nada' (we charge nothing), never 'free'."
+    },
+    "children_per_pingu_lifetime": 1,
+    "child_born_at": {
+      "generacion": 0,
+      "estado": "HIELO_SOLIDO",
+      "calor": 0
+    },
+    "inherits": [
+      "CUERPO",
+      "PALETA",
+      "CUBO",
+      "LINAJE"
+    ],
+    "rerolls": [
+      "FIT",
+      "MARCA",
+      "CARGA",
+      "FONDO",
+      "SENA"
+    ],
+    "inherits_nothing_of": [
+      "calor",
+      "hechos",
+      "generacion"
+    ],
+    "child_recipient": "initiator",
+    "partner_receives": [
+      "hecho:ENCUENTRO",
+      "permanent lineage attribution"
+    ],
+    "cross_wallet": true,
+    "windows": [
+      {
+        "key": "VENTANA_I",
+        "opens": "GEN1 reaches 25% of genesis",
+        "duration_days": 90,
+        "produces_gen": 1,
+        "cap": 2369
+      },
+      {
+        "key": "VENTANA_II",
+        "opens": "VENTANA_I close +30d",
+        "duration_days": 90,
+        "produces_gen": 2,
+        "cap": 1184
+      }
+    ],
+    "expires": true,
+    "expiry_note": "Unbred capacity does NOT roll over. Final supply may land below cap. This is a feature.",
+    "gen3_can_breed": false,
+    "gen3_reason": "el vapor no se reproduce. el vapor terminó."
+  }
+} as const;

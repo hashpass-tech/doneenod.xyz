@@ -1,0 +1,23 @@
+{
+  "name": "@pingus/pingu-render",
+  "version": "0.2.0",
+  "private": true,
+  "description": "Deterministic SVG renderer — draws any pingu at any calor from its traits. No image assets.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "preview": "node scripts/preview.mjs",
+    "clean": "rm -rf dist .turbo preview"
+  },
+  "dependencies": {
+    "@pingus/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,81 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Never cancel an in-flight deploy — a half-published Pages artifact is worse
+# than a slightly stale one. Queue instead.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+env:
+  TURBO_TELEMETRY_DISABLED: 1
+  DO_NOT_TRACK: 1
+
+jobs:
+  build:
+    name: Build site
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - uses: actions/configure-pages@v5
+
+      - name: Build @pingus/web
+        run: pnpm --filter @pingus/web build
+        env:
+          # Project Pages are served from /<repo>/, so Vite needs a matching
+          # base. apps/web/vite.config reads process.env.VITE_BASE (default "/").
+          VITE_BASE: /pingus-squared/
+          # Set these as repository variables (Settings -> Secrets and
+          # variables -> Actions -> Variables) to point the live site at a
+          # deployed contract. When unset the app runs in demo mode, so no
+          # code change is needed to go live.
+          VITE_CONTRACT_ADDRESS: ${{ vars.VITE_CONTRACT_ADDRESS }}
+          VITE_CHAIN_ID: ${{ vars.VITE_CHAIN_ID }}
+
+      # The site is a SPA with client-side routing. GitHub Pages has no
+      # rewrite rules, so it serves 404.html for unknown paths; shipping the
+      # app shell as 404.html makes deep links work.
+      - name: Add SPA deep-link fallback
+        run: cp apps/web/dist/index.html apps/web/dist/404.html
+
+      # Without this, Pages runs the output through Jekyll and drops files
+      # and directories beginning with an underscore.
+      - name: Disable Jekyll processing
+        run: touch apps/web/dist/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: apps/web/dist
+
+  deploy:
+    name: Deploy
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

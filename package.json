@@ -1,0 +1,36 @@
+{
+  "name": "pingus-squared",
+  "version": "0.2.0",
+  "private": true,
+  "description": "PINGUS² — @plagainnvade × donedone.io. 2,369 pingus born frozen in ice.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hashpass-tech/pingus-squared.git"
+  },
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@9.15.5",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "generate": "node 08-tech/scripts/generate.mjs",
+    "version:status": "versioning status",
+    "version:validate": "versioning validate",
+    "version:sync": "versioning sync",
+    "version:patch": "versioning patch",
+    "version:minor": "versioning minor",
+    "version:major": "versioning major",
+    "changelog": "versioning changelog",
+    "check:secrets": "versioning check-secrets"
+  },
+  "devDependencies": {
+    "@edcalderon/versioning": "^1.5.13",
+    "turbo": "^2.3.3",
+    "typescript": "^5.7.2"
+  }
+}

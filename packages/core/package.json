@@ -1,0 +1,21 @@
+{
+  "name": "@pingus/core",
+  "version": "0.2.0",
+  "private": true,
+  "description": "PINGUS² trait engine, generation state machine and palette — deterministic, isomorphic.",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "sync:config": "node scripts/sync-config.mjs",
+    "check:config": "node scripts/sync-config.mjs --check",
+    "test": "node --test test/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist .turbo"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "rootPackageJson": "package.json",
+  "packages": [
+    "apps/web",
+    "packages/core",
+    "packages/pingu-render",
+    "packages/contracts"
+  ],
+  "changelogFile": "CHANGELOG.md",
+  "conventionalCommits": true,
+  "syncDependencies": true,
+  "ignorePackages": [],
+  "changelog": {
+    "preset": "angular",
+    "releaseCount": 0,
+    "tagPrefix": "v"
+  },
+  "sync": {
+    "includeRoot": true
+  },
+  "branchAwareness": {
+    "enabled": false,
+    "defaultBranch": "main"
+  },
+  "releaseGuard": {
+    "enabled": false,
+    "tagPrefix": "v",
+    "allowBuildMetadata": true,
+    "checkReleaseFloor": false,
+    "metadataFiles": []
+  },
+  "extensionConfig": {
+    "release-guard": {
+      "enabled": false,
+      "tagPrefix": "v"
+    },
+    "secrets-check": {
+      "enabled": true
+    }
+  }
+}

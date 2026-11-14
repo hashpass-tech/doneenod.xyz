@@ -1,0 +1,43 @@
+{
+  "name": "PINGUS2 Palette",
+  "version": "0.2",
+  "rule": "Palette is a function of generation. Cold at GEN0, hot at GEN2, spent at GEN3.",
+  "hard_limit": 4,
+  "core": {
+    "NEGRO_DONE": { "hex": "#111111", "rgb": [17, 17, 17], "role": "ink, line, tux" },
+    "HUESO": { "hex": "#EDE6D6", "rgb": [237, 230, 214], "role": "primary ground" },
+    "PERIODICO": { "hex": "#D8D2C4", "rgb": [216, 210, 196], "role": "aged ground (XEROX)" },
+    "CONCRETO": { "hex": "#6E6E68", "rgb": [110, 110, 104], "role": "bleed, shadow" }
+  },
+  "cold": {
+    "CIAN_HIELO": { "hex": "#7FD4E8", "rgb": [127, 212, 232], "role": "the ice" },
+    "AZUL_FRIO": { "hex": "#4A90A8", "rgb": [74, 144, 168], "role": "fracture lines" }
+  },
+  "warm": {
+    "NARANJA_DONE": { "hex": "#FF5A1F", "rgb": [255, 90, 31], "weight": 380, "colors": 4 },
+    "LIMA_BIO": { "hex": "#C8FF00", "rgb": [200, 255, 0], "weight": 250, "colors": 4 },
+    "AMBAR": { "hex": "#E8A33D", "rgb": [232, 163, 61], "weight": 220, "colors": 4 },
+    "ROJO_AVISO": { "hex": "#D1202A", "rgb": [209, 32, 42], "weight": 100, "colors": 3 },
+    "SIN_COLOR": { "hex": null, "rgb": null, "weight": 50, "colors": 2, "rarest": true }
+  },
+  "generation_rules": {
+    "0": { "name": "HIELO", "accent_pool": "cold", "dominant": "CIAN_HIELO", "colors": 4, "warm_allowed": false },
+    "1": { "name": "DESHIELO", "accent_pool": "both", "dominant": "CIAN_HIELO", "secondary": "AMBAR", "colors": 4, "note": "only generation where cold and warm coexist" },
+    "2": { "name": "CORRIENTE", "accent_pool": "warm", "dominant": "paleta_trait", "colors": [3, 4], "saturation": "full" },
+    "3": { "name": "VAPOR", "accent_pool": "none", "colors": 2, "line_opacity": [0.3, 0.5], "ghost_accent_max_opacity": 0.15, "cold_allowed": false }
+  },
+  "illegal": [
+    "two accents in one piece",
+    "five colors (except Ruptura: QUINTO_COLOR)",
+    "gradient between two named colors",
+    "#000000",
+    "#FFFFFF",
+    "warm color at GEN 0",
+    "cold color at GEN 3"
+  ],
+  "notes": {
+    "subtractive_rarity": "Rarest pieces have the FEWEST colors. No gold/holo/rainbow tier.",
+    "riso_overprint": "Accent multiplies over black. Offset accent channel 2px random axis.",
+    "brand_alignment": "NARANJA_DONE #FF5A1F is PROPOSED. Confirm against donedone.io brand primary."
+  }
+}

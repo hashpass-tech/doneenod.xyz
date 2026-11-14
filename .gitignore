@@ -1,0 +1,36 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+.turbo/
+
+# hardhat
+packages/contracts/artifacts/
+packages/contracts/cache/
+packages/contracts/typechain-types/
+
+# local renderer previews
+packages/pingu-render/preview/
+
+# env — never commit keys or RPC URLs
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# generated — reproducible from 08-tech/config via `node 08-tech/scripts/generate.mjs`
+08-tech/output/
+
+# large binaries
+09-production/exports/
+09-production/layers/**/*.psd
+09-production/layers/**/*.ai
+09-production/layers/**/*.tif
+
+.DS_Store

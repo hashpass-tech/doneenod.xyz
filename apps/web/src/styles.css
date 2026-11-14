@@ -1,0 +1,1353 @@
+/*
+ * pingus² — the site is a printed object.
+ *
+ * Every colour here comes from 08-tech/config/palette.json. The palette has a
+ * hard limit of four colours per piece and forbids #000 and #fff outright, so
+ * the UI uses ink/bone/ice/orange and nothing else. Type is lowercase
+ * everywhere — see 07-launch/01-voice.md rule 2.
+ */
+
+:root {
+  /* core */
+  --ink: #111111;
+  --bone: #ede6d6;
+  --paper: #d8d2c4;
+  --concrete: #6e6e68;
+
+  /* cold */
+  --ice: #7fd4e8;
+  --cold: #4a90a8;
+
+  /* warm */
+  --orange: #ff5a1f;
+  --lime: #c8ff00;
+  --amber: #e8a33d;
+  --red: #d1202a;
+
+  --rule: color-mix(in srgb, var(--ink) 16%, transparent);
+  --rule-soft: color-mix(in srgb, var(--ink) 8%, transparent);
+
+  --sans: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --shell: min(1400px, 92vw);
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --header-h: 60px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  /* Lenis drives scrolling; native smooth would fight it. */
+  scroll-behavior: auto;
+  -webkit-text-size-adjust: 100%;
+}
+
+html.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  background: var(--bone);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  line-height: 1.5;
+  text-transform: lowercase;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+/* The ground is paper, not a screen: a faint fibre tooth over everything. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: multiply;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+ul,
+ol {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font: inherit;
+  text-transform: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+svg {
+  display: block;
+}
+
+/*
+ * The renderer emits a fixed-size <svg> with a 1000 viewBox. Everywhere it is
+ * placed, it should fill the width it is given and stay square — the pixel
+ * size passed to renderPingu only controls rasterisation hints, never layout.
+ */
+.pingu-art {
+  line-height: 0;
+}
+
+.pingu-art > svg {
+  width: 100%;
+  height: auto;
+}
+
+::selection {
+  background: var(--ice);
+  color: var(--ink);
+}
+
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+
+/* ---------------------------------------------------------------- type --- */
+
+.display {
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: -0.045em;
+  font-size: clamp(3.2rem, 13vw, 13rem);
+}
+
+.h-xl {
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.035em;
+  font-size: clamp(2.2rem, 6.4vw, 5.4rem);
+}
+
+.h-md {
+  font-weight: 700;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  font-size: clamp(1.4rem, 2.8vw, 2.3rem);
+}
+
+.lede {
+  font-size: clamp(1.05rem, 1.9vw, 1.6rem);
+  line-height: 1.32;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  max-width: 24ch;
+}
+
+.mono {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.17em;
+  text-transform: uppercase;
+}
+
+.dim {
+  color: var(--concrete);
+}
+
+.tabular {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ------------------------------------------------------------- layout --- */
+
+.shell {
+  width: var(--shell);
+  margin-inline: auto;
+}
+
+.section {
+  position: relative;
+  padding-block: clamp(5rem, 13vh, 11rem);
+}
+
+.rule-top {
+  border-top: 1px solid var(--rule);
+}
+
+/* The four-figure left rail every section is numbered against. */
+.section-tag {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  margin-bottom: 2.6rem;
+  padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.section-tag b {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 0.72rem;
+  letter-spacing: 0.17em;
+}
+
+/* ------------------------------------------------------------- header --- */
+
+.header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 60;
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  background: color-mix(in srgb, var(--bone) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(1.3);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.4s var(--ease), background 0.4s var(--ease);
+}
+
+.header[data-stuck="true"] {
+  border-bottom-color: var(--rule);
+}
+
+.header .shell {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.brand {
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  font-size: 1.12rem;
+  text-transform: uppercase;
+}
+
+.brand sup {
+  font-size: 0.62em;
+  top: -0.5em;
+}
+
+.nav {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+}
+
+.nav a {
+  position: relative;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding-block: 0.35rem;
+}
+
+.nav a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 100%;
+  bottom: 0;
+  height: 1px;
+  background: var(--ink);
+  transition: right 0.38s var(--ease);
+}
+
+.nav a:hover::after,
+.nav a[aria-current="page"]::after {
+  right: 0;
+}
+
+@media (max-width: 760px) {
+  .nav {
+    gap: 0.95rem;
+  }
+  .nav a {
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+  }
+  .nav .nav-hide {
+    display: none;
+  }
+}
+
+/* -------------------------------------------------------------- button --- */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  padding: 0.9rem 1.7rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  border: 1.5px solid var(--ink);
+  background: transparent;
+  overflow: hidden;
+  isolation: isolate;
+  transition: color 0.34s var(--ease);
+}
+
+/* The hover fill wipes up like ink pulled through a screen. */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--ink);
+  transform: translateY(101%);
+  transition: transform 0.42s var(--ease);
+}
+
+.btn:hover::before,
+.btn:focus-visible::before {
+  transform: translateY(0);
+}
+
+.btn:hover,
+.btn:focus-visible {
+  color: var(--bone);
+}
+
+.btn-solid {
+  background: var(--ink);
+  color: var(--bone);
+}
+
+.btn-solid::before {
+  background: var(--orange);
+}
+
+.btn-solid:hover,
+.btn-solid:focus-visible {
+  color: var(--ink);
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btn:disabled::before {
+  transform: translateY(101%);
+}
+
+.btn-sm {
+  padding: 0.6rem 1.05rem;
+  font-size: 0.64rem;
+}
+
+/* ---------------------------------------------------------------- hero --- */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: grid;
+  align-content: center;
+  padding-block: calc(var(--header-h) + 4rem) 5rem;
+  overflow: hidden;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.58fr);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: end;
+  margin-top: clamp(1.5rem, 4vh, 3rem);
+}
+
+@media (max-width: 900px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    align-items: start;
+  }
+  .hero-art {
+    order: -1;
+    max-width: 62vw;
+    margin-inline: auto;
+  }
+}
+
+/*
+ * The wordmark is set to fill the measure exactly: 7 glyphs of Archivo Black
+ * at these metrics come to ~0.62em average advance, so 1cap ≈ shell/4.6.
+ * Sized in vw rather than % because it must key to the viewport the shell is
+ * derived from, and capped so it does not become absurd on a 32" display.
+ */
+.hero-title {
+  font-weight: 900;
+  line-height: 0.8;
+  letter-spacing: -0.055em;
+  font-size: min(16.2vw, 13.5rem);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hero-title sup {
+  font-size: 0.38em;
+  top: -0.9em;
+  margin-left: 0.02em;
+}
+
+/* Each line of the headline rides up from behind a mask on load. */
+.reveal-line {
+  display: block;
+  overflow: hidden;
+}
+
+.reveal-line > span {
+  display: block;
+  will-change: transform;
+}
+
+.hero-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.4rem 2.4rem;
+  margin-top: 2.6rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--rule);
+}
+
+.hero-meta div b {
+  display: block;
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.hero-meta div span {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--concrete);
+}
+
+.hero-art {
+  position: relative;
+}
+
+.hero-art .art-frame {
+  border: 1px solid var(--rule);
+}
+
+.scroll-cue {
+  position: absolute;
+  right: max(4vw, calc((100vw - var(--shell)) / 2));
+  bottom: 1.8rem;
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--concrete);
+}
+
+.scroll-cue i {
+  display: block;
+  width: 1px;
+  height: 46px;
+  background: linear-gradient(var(--ink), transparent);
+  animation: cue 2.4s var(--ease) infinite;
+  transform-origin: top;
+}
+
+@keyframes cue {
+  0% {
+    transform: scaleY(0);
+  }
+  45% {
+    transform: scaleY(1);
+  }
+  100% {
+    transform: scaleY(0);
+    transform-origin: bottom;
+  }
+}
+
+/* ---------------------------------------------------------- thaw scene --- */
+
+/*
+ * The centrepiece: one pingu pinned while the page scrolls four screens of
+ * copy past it, advancing calor 0 → 21. The whole generation arc in one move.
+ */
+.thaw {
+  position: relative;
+  background: var(--bone);
+}
+
+.thaw-pin {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1rem, 4vw, 4rem);
+  padding-top: var(--header-h);
+}
+
+.thaw-art {
+  position: relative;
+  justify-self: center;
+  width: min(44vw, 62svh);
+  aspect-ratio: 1;
+}
+
+.thaw-art .frame {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--rule);
+}
+
+.thaw-art .frame > * {
+  width: 100%;
+  height: 100%;
+}
+
+/* Cross-fade between the outgoing and incoming generation. */
+.thaw-art .frame.is-prev {
+  opacity: 0;
+}
+
+.thaw-copy {
+  position: relative;
+  min-height: 46svh;
+}
+
+.thaw-step {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  align-content: center;
+  gap: 1.1rem;
+  opacity: 0;
+}
+
+.thaw-step h3 {
+  font-weight: 900;
+  font-size: clamp(2.4rem, 7.5vw, 6.5rem);
+  line-height: 0.84;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.thaw-step p {
+  font-size: clamp(1rem, 1.7vw, 1.4rem);
+  line-height: 1.34;
+  font-weight: 500;
+  max-width: 26ch;
+}
+
+.thaw-step .gen-no,
+.thaw-static-copy .gen-no {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+/* Thin progress rail that fills as the ice gives way. */
+.thaw-rail {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 7svh;
+  height: 1px;
+  background: var(--rule);
+}
+
+.thaw-rail i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  background: var(--ink);
+}
+
+.thaw-rail b {
+  position: absolute;
+  top: -1.5rem;
+  left: 0;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  translate: -50% 0;
+}
+
+/*
+ * The reduced-motion variant: four generations as four static rows instead of
+ * one pinned cube under a scrub. No pin, no sticky, no scroll-linked writes.
+ */
+.thaw-static {
+  padding: clamp(3rem, 7vw, 6rem) 0;
+}
+
+.thaw-static-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.4rem, 4vw, 4rem);
+  max-width: var(--shell);
+  margin: 0 auto;
+  padding: clamp(1.6rem, 4vw, 3rem) var(--gutter);
+  border-top: 1px solid var(--rule);
+}
+
+.thaw-static-row:first-child {
+  border-top: 0;
+}
+
+.thaw-static-art {
+  justify-self: center;
+  width: min(38vw, 46svh);
+  border: 1px solid var(--rule);
+}
+
+.thaw-static-copy {
+  display: grid;
+  gap: 1.1rem;
+  align-content: center;
+}
+
+.thaw-static-copy h3 {
+  font-weight: 900;
+  font-size: clamp(2.2rem, 6vw, 4.6rem);
+  line-height: 0.86;
+  letter-spacing: -0.045em;
+  text-transform: uppercase;
+}
+
+.thaw-static-copy p {
+  font-size: clamp(1rem, 1.7vw, 1.3rem);
+  line-height: 1.34;
+  font-weight: 500;
+  max-width: 30ch;
+}
+
+@media (max-width: 760px) {
+  .thaw-static-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .thaw-static-art {
+    width: min(78vw, 42svh);
+  }
+}
+
+.thaw-scroll {
+  height: 420svh;
+}
+
+@media (max-width: 900px) {
+  .thaw-pin {
+    grid-template-columns: 1fr;
+    align-content: center;
+    gap: 1.2rem;
+  }
+  .thaw-art {
+    width: min(72vw, 40svh);
+  }
+  .thaw-copy {
+    min-height: 32svh;
+  }
+}
+
+/* ------------------------------------------------------- the four words --- */
+
+.words {
+  overflow: hidden;
+  padding-block: clamp(4rem, 9vh, 8rem);
+  border-block: 1px solid var(--rule);
+}
+
+.words-track {
+  display: flex;
+  align-items: baseline;
+  gap: 4.5rem;
+  width: max-content;
+  white-space: nowrap;
+  will-change: transform;
+}
+
+.words-track span {
+  font-weight: 900;
+  font-size: clamp(3.5rem, 11vw, 10rem);
+  line-height: 0.85;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+
+.words-track span.o {
+  -webkit-text-stroke: 1.4px var(--ink);
+  color: transparent;
+}
+
+/*
+ * With no scrub the track never moves, so a single nowrap line would leave
+ * two of the four words permanently off-screen. Wrap it instead, and drop the
+ * repeated "nace" that only exists to cover the tail of the horizontal run.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .words {
+    padding-inline: var(--gutter);
+  }
+
+  .words-track {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: auto;
+    white-space: normal;
+    gap: clamp(1.5rem, 4vw, 4.5rem);
+    will-change: auto;
+  }
+
+  .words-track span:last-child {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------- mosaic --- */
+
+/*
+ * A fixed column count rather than auto-fill: the sample sizes are chosen to
+ * divide evenly into 12 / 6 / 4, so the sheet never ends on a ragged row.
+ */
+.mosaic {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--rule-soft);
+  border: 1px solid var(--rule-soft);
+}
+
+@media (max-width: 980px) {
+  .mosaic {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 540px) {
+  .mosaic {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.tile {
+  position: relative;
+  aspect-ratio: 1;
+  background: var(--bone);
+  overflow: hidden;
+  transition: z-index 0s;
+}
+
+.tile > svg,
+.tile > .tile-art {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.5s var(--ease);
+}
+
+.tile:hover > svg,
+.tile:hover > .tile-art {
+  transform: scale(1.06);
+}
+
+.tile-id {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  padding: 0.3rem 0.45rem;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.1em;
+  background: var(--ink);
+  color: var(--bone);
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 0.3s var(--ease);
+}
+
+.tile:hover .tile-id,
+.tile:focus-visible .tile-id {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.tile-skeleton {
+  width: 100%;
+  height: 100%;
+  background: var(--rule-soft);
+}
+
+/* ------------------------------------------------------------- marquee --- */
+
+.marquee {
+  overflow: hidden;
+  border-block: 1px solid var(--rule);
+  background: var(--ink);
+  color: var(--bone);
+  padding-block: 0.8rem;
+}
+
+.marquee-track {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  animation: slide 34s linear infinite;
+}
+
+@keyframes slide {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------- figures --- */
+
+.figures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  border-top: 1px solid var(--rule);
+}
+
+.figures div {
+  padding: 2rem 1.4rem;
+  border-right: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+
+.figures div:last-child {
+  border-right: 0;
+}
+
+.figures b {
+  display: block;
+  font-family: var(--mono);
+  font-size: clamp(2rem, 4.5vw, 3.4rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+}
+
+.figures span {
+  display: block;
+  margin-top: 0.5rem;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--concrete);
+}
+
+/* --------------------------------------------------------------- rules --- */
+
+.rules {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.rules li {
+  display: grid;
+  grid-template-columns: 4ch minmax(0, 1fr);
+  gap: clamp(1rem, 4vw, 3rem);
+  align-items: baseline;
+  padding-block: clamp(1.3rem, 3.2vh, 2.3rem);
+  border-bottom: 1px solid var(--rule);
+}
+
+.rules li b {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  color: var(--concrete);
+}
+
+.rules li p {
+  font-weight: 700;
+  font-size: clamp(1.25rem, 3.4vw, 2.6rem);
+  line-height: 1.04;
+  letter-spacing: -0.03em;
+}
+
+.rules li p em {
+  font-style: normal;
+  color: var(--concrete);
+  font-weight: 500;
+  display: block;
+  font-size: 0.42em;
+  letter-spacing: 0;
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+/* ---------------------------------------------------------- split quote --- */
+
+.quote {
+  padding-block: clamp(5rem, 16vh, 13rem);
+  text-align: center;
+  background: var(--ink);
+  color: var(--bone);
+}
+
+.quote p {
+  font-weight: 800;
+  font-size: clamp(1.6rem, 5.2vw, 4.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  max-width: 18ch;
+  margin-inline: auto;
+}
+
+.quote span {
+  display: block;
+  margin-top: 1.8rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+/* ---------------------------------------------------------------- mint --- */
+
+.mint-wrap {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 430px);
+  gap: clamp(1.5rem, 4vw, 4rem);
+  align-items: start;
+}
+
+@media (max-width: 980px) {
+  .mint-wrap {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel {
+  border: 1.5px solid var(--ink);
+  background: var(--bone);
+  padding: clamp(1.2rem, 2.6vw, 2rem);
+}
+
+.panel-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  margin-bottom: 1.3rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.field {
+  display: grid;
+  gap: 0.55rem;
+  margin-bottom: 1.3rem;
+}
+
+.field > label {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--concrete);
+}
+
+.stepper {
+  display: grid;
+  grid-template-columns: 54px 1fr 54px;
+  border: 1.5px solid var(--ink);
+}
+
+.stepper button {
+  display: grid;
+  place-items: center;
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding-block: 0.75rem;
+  transition: background 0.25s var(--ease), color 0.25s var(--ease);
+}
+
+.stepper button:hover:not(:disabled) {
+  background: var(--ink);
+  color: var(--bone);
+}
+
+.stepper button:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.stepper output {
+  display: grid;
+  place-items: center;
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  border-inline: 1.5px solid var(--ink);
+}
+
+.rows {
+  display: grid;
+  gap: 0.6rem;
+  margin: 1.4rem 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--rule);
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+}
+
+.row span:first-child {
+  color: var(--concrete);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.64rem;
+}
+
+.row.total {
+  padding-top: 0.6rem;
+  margin-top: 0.3rem;
+  border-top: 1px solid var(--rule);
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.supply-bar {
+  height: 6px;
+  background: var(--rule);
+  overflow: hidden;
+}
+
+.supply-bar i {
+  display: block;
+  height: 100%;
+  background: var(--ink);
+  transition: width 0.8s var(--ease);
+}
+
+.notice {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1.3rem;
+  border-left: 3px solid var(--cold);
+  background: color-mix(in srgb, var(--ice) 16%, transparent);
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  line-height: 1.5;
+}
+
+.notice b {
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.notice.warn {
+  border-left-color: var(--orange);
+  background: color-mix(in srgb, var(--orange) 11%, transparent);
+}
+
+.notice.bad {
+  border-left-color: var(--red);
+  background: color-mix(in srgb, var(--red) 10%, transparent);
+}
+
+/* Minted receipts — a receipt for work, not a certificate. */
+.receipts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-top: 1.6rem;
+}
+
+.receipt {
+  border: 1px solid var(--rule);
+  background: var(--bone);
+}
+
+.receipt figcaption {
+  padding: 0.55rem 0.7rem;
+  border-top: 1px solid var(--rule);
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+}
+
+/* ------------------------------------------------------------- gallery --- */
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.2rem;
+  align-items: center;
+  padding-block: 1.1rem;
+  border-bottom: 1px solid var(--rule);
+  position: sticky;
+  top: var(--header-h);
+  z-index: 40;
+  background: color-mix(in srgb, var(--bone) 92%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+.select {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.select select {
+  appearance: none;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  padding: 0.5rem 2.1rem 0.5rem 0.75rem;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.select::after {
+  content: "";
+  position: absolute;
+  right: 0.75rem;
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid var(--ink);
+  border-bottom: 1.5px solid var(--ink);
+  rotate: 45deg;
+  translate: 0 -2px;
+  pointer-events: none;
+}
+
+.input {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.13em;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--ink);
+  background: transparent;
+  color: inherit;
+  width: 9ch;
+}
+
+.input::placeholder {
+  color: var(--concrete);
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------- token --- */
+
+.token {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 420px);
+  gap: clamp(1.5rem, 4vw, 3.5rem);
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .token {
+    grid-template-columns: 1fr;
+  }
+}
+
+.token-art {
+  border: 1px solid var(--rule);
+  position: relative;
+}
+
+.token-art > svg {
+  width: 100%;
+  height: auto;
+}
+
+/* Cap the whole art column by viewport height so the generation switch below
+   stays on screen — the switch is the point of the page — and so the switch
+   stays exactly as wide as the artwork it belongs to. */
+.token-col {
+  max-width: min(100%, 64svh);
+}
+
+.gen-switch {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border: 1.5px solid var(--ink);
+  margin-top: 1.1rem;
+}
+
+.gen-switch button {
+  padding: 0.65rem 0.4rem;
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  border-right: 1px solid var(--ink);
+  transition: background 0.3s var(--ease), color 0.3s var(--ease);
+}
+
+.gen-switch button:last-child {
+  border-right: 0;
+}
+
+.gen-switch button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--bone);
+}
+
+.traits {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+}
+
+.trait {
+  background: var(--bone);
+  padding: 0.75rem 0.85rem;
+}
+
+.trait span {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--concrete);
+}
+
+.trait b {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.trait i {
+  display: block;
+  margin-top: 0.2rem;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  font-style: normal;
+  color: var(--concrete);
+}
+
+/* -------------------------------------------------------------- footer --- */
+
+.footer {
+  border-top: 1px solid var(--rule);
+  padding-block: 3rem 2.4rem;
+}
+
+.footer-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2rem;
+  align-items: flex-end;
+}
+
+.footer-mark {
+  font-weight: 900;
+  font-size: clamp(3rem, 12vw, 9rem);
+  line-height: 0.8;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+}
+
+/* ------------------------------------------------- scroll-in primitive --- */
+
+/* GSAP sets the final state; this is the pre-paint resting position so there
+   is no flash of laid-out content before the first ScrollTrigger refresh. */
+[data-anim] {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-anim] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .thaw-step {
+    opacity: 1;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+.loading {
+  display: grid;
+  place-items: center;
+  min-height: 60svh;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--concrete);
+}

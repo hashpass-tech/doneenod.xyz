@@ -1,0 +1,89 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump:
+        description: Semver bump to apply
+        type: choice
+        required: true
+        default: patch
+        options:
+          - patch
+          - minor
+          - major
+      dry_run:
+        description: Run the checks and the bump but do not push anything
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Bump, changelog, tag
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      # conventional-changelog walks the full history and the existing tags,
+      # so a shallow clone would produce an empty changelog entry.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # The release commit is authored by the workflow, so git needs an
+      # identity before @edcalderon/versioning can commit and tag.
+      - name: Configure git identity
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Validate version sync across the monorepo
+        run: pnpm run version:validate
+
+      - name: Version status (pre-release)
+        run: pnpm run version:status
+
+      # Verified against @edcalderon/versioning@1.5.13 (`versioning --help`,
+      # `versioning bump --help`): the `patch` / `minor` / `major` subcommands
+      # each run the full release pipeline in one shot — sync versions across
+      # the packages listed in versioning.config.json, regenerate CHANGELOG.md
+      # with the angular preset, commit `chore: release v<version>`, and create
+      # an annotated `v<version>` tag (tagPrefix comes from the config).
+      # `--no-commit` / `--no-tag` would opt out of the last two steps; we want
+      # both, so no flags are passed. The equivalent generic form is
+      # `versioning bump <type>`.
+      #
+      # Note: the bundled changelog-guard extension fails the release if the
+      # generated entry for the new version is empty, so there must be at
+      # least one conventional commit since the previous tag.
+      - name: Bump version, regenerate changelog and tag
+        run: pnpm exec versioning "${{ inputs.bump }}"
+
+      - name: Version status (post-release)
+        run: pnpm run version:status
+
+      - name: Show the release commit and tag
+        run: |
+          git --no-pager log -1 --stat
+          git --no-pager tag --points-at HEAD
+
+      - name: Push release commit and tag
+        if: ${{ inputs.dry_run != true }}
+        run: git push --follow-tags origin HEAD:${{ github.ref_name }}

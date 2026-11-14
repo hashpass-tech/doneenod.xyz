@@ -1,0 +1,72 @@
+version: 2
+
+updates:
+  # Root workspace manifest. pnpm workspaces are covered by the root entry
+  # plus one directory entry per workspace package below.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    groups:
+      npm-minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      # Workspace-internal packages are versioned by the release workflow.
+      - dependency-name: "@pingus/*"
+
+  - package-ecosystem: npm
+    directory: /apps/web
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    versioning-strategy: increase
+    groups:
+      web-minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "@pingus/*"
+
+  - package-ecosystem: npm
+    directory: /packages/core
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    ignore:
+      - dependency-name: "@pingus/*"
+
+  - package-ecosystem: npm
+    directory: /packages/pingu-render
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    ignore:
+      - dependency-name: "@pingus/*"
+
+  - package-ecosystem: npm
+    directory: /packages/contracts
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    groups:
+      hardhat-toolchain:
+        patterns:
+          - "hardhat*"
+          - "@nomicfoundation/*"
+          - "@typechain/*"
+          - "typechain"
+          - "ethers"
+    ignore:
+      - dependency-name: "@pingus/*"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 3
+    groups:
+      github-actions:
+        patterns: ["*"]

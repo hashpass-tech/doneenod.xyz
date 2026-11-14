@@ -1,0 +1,9 @@
+artifacts/
+cache/
+typechain-types/
+.turbo/
+coverage/
+coverage.json
+.env
+.env.*
+!.env.example

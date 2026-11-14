@@ -1,0 +1,125 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# One run per ref. A new push supersedes an in-flight run.
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  TURBO_TELEMETRY_DISABLED: 1
+  DO_NOT_TRACK: 1
+
+jobs:
+  # Fast gate: generated-file drift + types. Runs first so an out-of-sync
+  # 08-tech/config mirror fails in ~1 min instead of after the full matrix.
+  checks:
+    name: Generated-file drift and typecheck
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # 08-tech/config/*.json is the source of truth; packages/core/src/config
+      # is a generated TS mirror. Drift means the engine and the spec disagree.
+      - name: Check generated config mirror is in sync
+        run: pnpm --filter @pingus/core run check:config
+
+      # src/lib/abi.ts is generated from packages/contracts/abi/Pingus2.json.
+      # If the contract's public surface changed and the frontend's slice was
+      # not regenerated, the mint page would call a signature that no longer
+      # exists — and only at runtime, in the user's wallet.
+      - name: Check web ABI slice is in sync
+        run: pnpm --filter @pingus/web run abi:check
+
+      - name: Typecheck
+        run: pnpm typecheck
+
+  # @pingus/core parity suite (bit-identical trait output vs the reference
+  # generator) plus the @pingus/pingu-render SVG tests.
+  test:
+    name: Core parity and renderer tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Test @pingus/core
+        run: pnpm --filter @pingus/core test
+
+      - name: Test @pingus/pingu-render
+        run: pnpm --filter @pingus/pingu-render test
+
+  # Hardhat needs an explicit compile before `hardhat test` can resolve
+  # typechain types; @pingus/contracts exposes that as its `build` script.
+  contracts:
+    name: Contracts (Hardhat)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Compile contracts
+        run: pnpm --filter @pingus/contracts build
+
+      - name: Test contracts
+        run: pnpm --filter @pingus/contracts test
+
+  # The Pages build is exercised on every PR so a broken site build never
+  # lands on main, where deploy.yml would publish it.
+  build-web:
+    name: Build site
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build @pingus/web
+        run: pnpm --filter @pingus/web build
+        env:
+          VITE_BASE: /pingus-squared/
