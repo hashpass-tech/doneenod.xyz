@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 // GitHub Pages serves the site from /<repo>/. The deploy workflow sets
-// VITE_BASE=/pingus-squared/; local dev and custom domains use "/".
+// VITE_BASE=/doneenod.xyz/; local dev and custom domains use "/".
 const base = process.env.VITE_BASE ?? "/";
 
 export default defineConfig({

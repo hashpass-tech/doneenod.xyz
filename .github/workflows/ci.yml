@@ -119,7 +119,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # Built under the project-Pages base rather than "/", because that is
+      # the path that actually breaks: a bad base produces a site that builds
+      # cleanly and then loads nothing. deploy.yml derives the same value.
       - name: Build @pingus/web
         run: pnpm --filter @pingus/web build
         env:
-          VITE_BASE: /pingus-squared/
+          VITE_BASE: /${{ github.event.repository.name }}/

@@ -21,8 +21,8 @@ pnpm --filter @pingus/web dev
 
 Routing is a ~60-line hook in [`src/lib/router.ts`](src/lib/router.ts), not a
 library. Paths are stored base-relative so the same build works at `/` locally
-and at `/pingus-squared/` on Pages. Pages serves no rewrites, so `404.html` is
-a copy of `index.html` and the router recovers the path on load.
+and at `/doneenod.xyz/` on project Pages. Pages serves no rewrites, so
+`404.html` is a copy of `index.html` and the router recovers the path on load.
 
 ---
 
@@ -43,7 +43,16 @@ a repository variable; there is no code change.
 |---|---|---|
 | `VITE_CONTRACT_ADDRESS` | unset | A valid address leaves demo mode and talks to the chain |
 | `VITE_CHAIN_ID` | `1` | `1` mainnet, `11155111` sepolia |
-| `VITE_BASE` | `/` | Vite `base`. CI sets `/pingus-squared/` |
+| `VITE_BASE` | `/` | Vite `base`. The workflows derive it — see below |
+
+### Serving from the apex domain
+
+`deploy.yml` picks the base from one file: if `apps/web/public/CNAME` exists it
+builds at `/`, otherwise at `/<repo>/`. Vite copies `public/CNAME` into `dist`,
+and that file is also what tells Pages to serve the custom domain — so the base
+and the domain cannot drift apart. To move the site to `doneenod.xyz`, create
+the file with the bare hostname in it and point the DNS at GitHub; nothing else
+changes.
 
 The page states which mode it is in, in plain language. It never implies a
 simulated mint is real.
@@ -114,9 +123,15 @@ someone's wallet.
 ## Visual QA
 
 ```bash
-pnpm --filter @pingus/web build && pnpm --filter @pingus/web preview
-node apps/web/scripts/shots.mjs http://localhost:4173 /tmp/shots
+pnpm --filter @pingus/web build
+pnpm --filter @pingus/web preview --port 4317
+node apps/web/scripts/shots.mjs http://localhost:4317 /tmp/shots
 ```
+
+`vite preview` reads `VITE_BASE` the same way the build does, so set it on
+both or neither — serving a `/<repo>/` build from `/` returns the HTML
+fallback for every asset, and the result is a blank page with no console
+error to explain it.
 
 [`scripts/shots.mjs`](scripts/shots.mjs) drives a real headless Chromium over
 the DevTools protocol and captures the site at fourteen specific scroll depths.

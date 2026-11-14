@@ -5,7 +5,7 @@
   "description": "PINGUS² — @plagainnvade × donedone.io. 2,369 pingus born frozen in ice.",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hashpass-tech/pingus-squared.git"
+    "url": "git+https://github.com/hashpass-tech/doneenod.xyz.git"
   },
   "license": "UNLICENSED",
   "packageManager": "pnpm@9.15.5",

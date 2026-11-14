@@ -3,7 +3,7 @@
  *
  * The whole site is four screens. Pulling in react-router for that would cost
  * more bytes than the renderer. The only genuinely fiddly part is the base
- * path: on GitHub Pages the site lives under /pingus-squared/, so every path
+ * path: on GitHub Pages the site lives under /doneenod.xyz/, so every path
  * here is stored base-relative and only gains the prefix at the browser edge.
  */
 import { useCallback, useEffect, useState } from "react";

@@ -37,4 +37,4 @@ conventional commit messages. Do not hand-edit generated sections.
   core engine and the renderer directly from source. Builds to a static SPA and
   runs in demo mode until `VITE_CONTRACT_ADDRESS` and `VITE_CHAIN_ID` are set
 
-[0.2.0]: https://github.com/hashpass-tech/pingus-squared/releases/tag/v0.2.0
+[0.2.0]: https://github.com/hashpass-tech/doneenod.xyz/releases/tag/v0.2.0

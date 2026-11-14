@@ -40,12 +40,25 @@ jobs:
 
       - uses: actions/configure-pages@v5
 
+      # Project Pages are served from /<repo>/, a custom domain from /. Which
+      # one applies is decided by apps/web/public/CNAME: Vite copies that file
+      # into dist, and its presence is exactly what tells Pages to serve the
+      # apex. Deriving the base from the same file means the two can never
+      # disagree — and a wrong base is a site that loads a blank page.
+      - name: Resolve Pages base path
+        id: base
+        run: |
+          if [ -f apps/web/public/CNAME ]; then
+            echo "value=/" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=/${GITHUB_REPOSITORY#*/}/" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build @pingus/web
         run: pnpm --filter @pingus/web build
         env:
-          # Project Pages are served from /<repo>/, so Vite needs a matching
-          # base. apps/web/vite.config reads process.env.VITE_BASE (default "/").
-          VITE_BASE: /pingus-squared/
+          # apps/web/vite.config reads process.env.VITE_BASE (default "/").
+          VITE_BASE: ${{ steps.base.outputs.value }}
           # Set these as repository variables (Settings -> Secrets and
           # variables -> Actions -> Variables) to point the live site at a
           # deployed contract. When unset the app runs in demo mode, so no
