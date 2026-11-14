@@ -20,13 +20,13 @@
     "gsap": "^3.12.5",
     "lenis": "^1.1.18",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react-dom": "^19.3.1",
     "viem": "^2.21.57",
     "wagmi": "^2.14.6"
   },
   "devDependencies": {
     "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
+    "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^4.3.4",
     "typescript": "^5.7.2",
     "vite": "^6.0.7"
